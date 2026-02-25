@@ -86,3 +86,52 @@ window.addEventListener('load', () => {
         document.body.style.opacity = '1';
     }, 100);
 });
+
+// Case Study Tabs & Sliders
+(function () {
+    function initSlider(slider) {
+        const track = slider.querySelector('.cs-slider-track');
+        const cards = track.querySelectorAll('.cs-card');
+        const dots = slider.querySelectorAll('.cs-dot');
+        const prevBtn = slider.querySelector('.cs-prev');
+        const nextBtn = slider.querySelector('.cs-next');
+        let current = 0;
+
+        function goTo(index) {
+            current = Math.max(0, Math.min(index, cards.length - 1));
+            track.style.transform = 'translateX(-' + (current * 100) + '%)';
+            dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+            if (prevBtn) prevBtn.disabled = current === 0;
+            if (nextBtn) nextBtn.disabled = current === cards.length - 1;
+        }
+
+        if (prevBtn) prevBtn.addEventListener('click', function () { goTo(current - 1); });
+        if (nextBtn) nextBtn.addEventListener('click', function () { goTo(current + 1); });
+        dots.forEach(function (dot, i) { dot.addEventListener('click', function () { goTo(i); }); });
+
+        // Touch/swipe support
+        let touchStartX = 0;
+        slider.addEventListener('touchstart', function (e) { touchStartX = e.touches[0].clientX; }, { passive: true });
+        slider.addEventListener('touchend', function (e) {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) { goTo(diff > 0 ? current + 1 : current - 1); }
+        }, { passive: true });
+
+        goTo(0);
+    }
+
+    const tabBtns = document.querySelectorAll('.cs-tab-btn');
+    const tabPanels = document.querySelectorAll('.cs-tab-panel');
+
+    tabBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const target = btn.dataset.tab;
+            tabBtns.forEach(function (b) { b.classList.remove('active'); });
+            tabPanels.forEach(function (p) { p.classList.remove('active'); });
+            btn.classList.add('active');
+            document.getElementById('cs-tab-' + target).classList.add('active');
+        });
+    });
+
+    document.querySelectorAll('.cs-slider').forEach(initSlider);
+}());
