@@ -63,14 +63,18 @@ body {
 .nav-list {
     display: flex;
     list-style: none;
-    gap: 2em;
+    gap: 1.2em;
     align-items: center;
+}
+
+.nav-list li {
+    white-space: nowrap;
 }
 
 .nav-list a {
     text-decoration: none;
     color: #000000;
-    font-size: 14px;
+    font-size: 13px;
     transition: color 0.3s;
 }
 
